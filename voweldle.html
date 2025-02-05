@@ -1,0 +1,625 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2487.6">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="en"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;title&gt;6x6 Vowel Grid Game&lt;/title&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- Ensure proper scaling on mobile --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- Import the Poppins font --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&amp;display=swap" rel="stylesheet"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>/* Basic layout and styling */</p>
+<p class="p1"><span class="Apple-converted-space">    </span>body {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>flex-direction: column;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>justify-content: center;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>min-height: 100vh;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>margin: 0;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-family: 'Poppins', sans-serif;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background-color: #f0f0f0;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>box-sizing: border-box;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>#game-container {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>flex-direction: column;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>/* Top bar with info icon and timer */</p>
+<p class="p1"><span class="Apple-converted-space">    </span>#top-bar {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>justify-content: space-between;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>width: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>max-width: 400px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>margin-bottom: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>#info-icon {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>width: 24px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>height: 24px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background-color: #d0d0d0;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 50%;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>text-align: center;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>line-height: 24px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>cursor: pointer;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>user-select: none;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>#timer {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 16px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color: #333;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>/* The 6×6 grid */</p>
+<p class="p1"><span class="Apple-converted-space">    </span>#grid {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: grid;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>grid-template-columns: repeat(6, 60px);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>grid-gap: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>margin-bottom: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.tile {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>width: 60px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>height: 60px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>justify-content: center;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background-color: #d0d0d0;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 24px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-weight: 500;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>transition: background-color 0.2s ease;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>position: relative;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>/* For vowel cells, use an input */</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.tile input {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>width: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>height: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border: none;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>text-align: center;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 24px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-weight: 500;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background-color: transparent;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>outline: none;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>text-transform: uppercase;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.tile:hover {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background-color: #b0b0b0;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.tile:focus-within {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background-color: #909090;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>/* Vowel keys (20% darker than grid tiles) */</p>
+<p class="p1"><span class="Apple-converted-space">    </span>#vowel-keys {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>justify-content: center;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>margin-bottom: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.vowel-key {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>width: 40px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>height: 40px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background-color: #a6a6a6; /* 20% darker than #d0d0d0 */</p>
+<p class="p1"><span class="Apple-converted-space">      </span>margin: 0 5px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>justify-content: center;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>cursor: pointer;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-weight: 500;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>user-select: none;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>-webkit-tap-highlight-color: transparent;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.vowel-key:hover {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background-color: #8c8c8c;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>/* Buttons container */</p>
+<p class="p1"><span class="Apple-converted-space">    </span>#buttons {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>gap: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>margin-bottom: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>button {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background-color: #d0d0d0;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border: none;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 10px 20px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>cursor: pointer;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-weight: 500;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>button:hover {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background-color: #aeaeae;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>/* Modal styling */</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.modal {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>position: fixed;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>top: 0;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>left: 0;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>width: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>height: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background-color: rgba(0,0,0,0.5);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>justify-content: center;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.modal-content {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background-color: #fff;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>text-align: center;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>position: relative;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>max-width: 90%;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>margin: 0 20px;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.close {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>position: absolute;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>top: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>right: 15px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-size: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>cursor: pointer;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.hidden {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>display: none;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>/* Jiggle (rotation) animation for vowel keys */</p>
+<p class="p1"><span class="Apple-converted-space">    </span>@keyframes jiggle {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>0% { transform: rotate(0deg); }</p>
+<p class="p1"><span class="Apple-converted-space">      </span>25% { transform: rotate(10deg); }</p>
+<p class="p1"><span class="Apple-converted-space">      </span>50% { transform: rotate(-10deg); }</p>
+<p class="p1"><span class="Apple-converted-space">      </span>75% { transform: rotate(10deg); }</p>
+<p class="p1"><span class="Apple-converted-space">      </span>100% { transform: rotate(0deg); }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.jiggle {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>animation: jiggle 1s ease-out;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>/* Responsive adjustments for smaller screens (mobile) */</p>
+<p class="p1"><span class="Apple-converted-space">    </span>@media (max-width: 480px) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>#grid {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>grid-template-columns: repeat(6, 50px);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>grid-gap: 5px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.tile {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>width: 50px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>height: 50px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>font-size: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.tile input {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>font-size: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>.vowel-key {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>width: 60px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>height: 60px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>font-size: 22px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>button {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>padding: 8px 16px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>font-size: 14px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>#timer {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>font-size: 14px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div id="game-container"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Top bar with info icon and timer --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="top-bar"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div id="info-icon"&gt;i&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div id="timer"&gt;Time: 0s&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- The 6×6 grid --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="grid"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Vowel keys row --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="vowel-keys"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="vowel-key" draggable="true" data-letter="A"&gt;A&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="vowel-key" draggable="true" data-letter="E"&gt;E&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="vowel-key" draggable="true" data-letter="I"&gt;I&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="vowel-key" draggable="true" data-letter="O"&gt;O&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="vowel-key" draggable="true" data-letter="U"&gt;U&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Buttons: New grid (loads a new puzzle) and Reset (clears current entries) --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="buttons"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;button id="new-grid-button"&gt;New grid&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;button id="reset-button"&gt;Reset&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- Info Modal --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div id="info-modal" class="modal hidden"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="modal-content"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;span id="close-info" class="close"&gt;&amp;times;&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;p&gt;Complete the grid with vowels to make 6 words horizontally and 6 words vertically as quickly as possible.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- Completion Modal with two buttons --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div id="completion-modal" class="modal hidden"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="modal-content"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;p id="completion-message"&gt;&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div style="margin-top:20px;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button id="play-another"&gt;Play another&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button id="close-completion"&gt;Close&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Helper function to detect mobile devices</p>
+<p class="p1"><span class="Apple-converted-space">    </span>function isMobile() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>return /Mobi|Android/i.test(navigator.userAgent);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Variables to track mobile-specific state for jiggle</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let mobileFirstTapDone = false;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Trigger a jiggle (rotation) on the vowel keys for 1 second</p>
+<p class="p1"><span class="Apple-converted-space">    </span>function triggerJiggle() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const vowelKeysContainer = document.getElementById('vowel-keys');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>vowelKeysContainer.classList.add('jiggle');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>setTimeout(() =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>vowelKeysContainer.classList.remove('jiggle');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}, 1000);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// --- Mobile drag-and-drop simulation for vowel keys ---</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let dragLetter = null;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let dragGhost = null;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>function updateDragGhost(x, y) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (dragGhost) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>dragGhost.style.left = (x - dragGhost.offsetWidth / 2) + 'px';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>dragGhost.style.top = (y - dragGhost.offsetHeight / 2) + 'px';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>function onVowelTouchStart(e) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>e.preventDefault();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>dragLetter = this.dataset.letter;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Create a ghost copy of the key</p>
+<p class="p1"><span class="Apple-converted-space">      </span>dragGhost = this.cloneNode(true);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>dragGhost.style.position = 'absolute';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>dragGhost.style.pointerEvents = 'none';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>dragGhost.style.opacity = '0.8';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>dragGhost.style.zIndex = '1000';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.body.appendChild(dragGhost);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>updateDragGhost(e.touches[0].clientX, e.touches[0].clientY);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>function onVowelTouchMove(e) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>e.preventDefault();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>updateDragGhost(e.touches[0].clientX, e.touches[0].clientY);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>function onVowelTouchEnd(e) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (dragGhost) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>let touch = e.changedTouches[0];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>let target = document.elementFromPoint(touch.clientX, touch.clientY);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (target &amp;&amp; target.tagName === 'INPUT' &amp;&amp; target.classList.contains('editable')) {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>target.value = dragLetter;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>checkCompletion();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>dragLetter = null;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.body.removeChild(dragGhost);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>dragGhost = null;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Launch a simple confetti burst on win</p>
+<p class="p1"><span class="Apple-converted-space">    </span>function launchConfetti() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const confettiContainer = document.createElement('div');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>confettiContainer.id = 'confetti-container';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>confettiContainer.style.position = 'fixed';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>confettiContainer.style.top = '0';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>confettiContainer.style.left = '0';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>confettiContainer.style.width = '100%';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>confettiContainer.style.height = '100%';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>confettiContainer.style.pointerEvents = 'none';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.body.appendChild(confettiContainer);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const colors = ['#FFC700', '#FF0000', '#2E3192', '#41BBC7', '#7CFC00', '#FF69B4'];</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const numConfetti = 50;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>for (let i = 0; i &lt; numConfetti; i++) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const confetti = document.createElement('div');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>confetti.classList.add('confetti');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>confetti.style.position = 'absolute';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>confetti.style.width = '8px';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>confetti.style.height = '8px';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>confetti.style.top = Math.random() * 100 + '%';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>confetti.style.left = Math.random() * 100 + '%';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>confetti.style.opacity = Math.random();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>confetti.style.transform = `rotate(${Math.random() * 360}deg)`;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>confetti.style.transition = 'transform 2s ease-out, top 2s ease-out, opacity 2s ease-out';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>confettiContainer.appendChild(confetti);</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// animate confetti falling</p>
+<p class="p1"><span class="Apple-converted-space">        </span>setTimeout(() =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>confetti.style.top = '110%';</p>
+<p class="p1"><span class="Apple-converted-space">          </span>confetti.style.transform = `rotate(${Math.random() * 360}deg)`;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>confetti.style.opacity = '0';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}, 50);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>setTimeout(() =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.body.removeChild(confettiContainer);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}, 2000);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.addEventListener('DOMContentLoaded', () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Three preset 6×6 grids. In each grid vowels (A, E, I, O, U) are the letters the user must re–enter.</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const grids = [</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{</p>
+<p class="p1"><span class="Apple-converted-space">          </span>rows: [</p>
+<p class="p1"><span class="Apple-converted-space">            </span>"ATTEST",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>"SHERPA",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>"TIARAS",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>"RESORT",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>"AVERSE",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>"LESSER"</p>
+<p class="p1"><span class="Apple-converted-space">          </span>]</p>
+<p class="p1"><span class="Apple-converted-space">        </span>},</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{</p>
+<p class="p1"><span class="Apple-converted-space">          </span>rows: [</p>
+<p class="p1"><span class="Apple-converted-space">            </span>"ACHING",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>"BOOGER",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>"SPOUSE",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>"UPDATE",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>"REINED",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>"DREARY"</p>
+<p class="p1"><span class="Apple-converted-space">          </span>]</p>
+<p class="p1"><span class="Apple-converted-space">        </span>},</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{</p>
+<p class="p1"><span class="Apple-converted-space">          </span>rows: [</p>
+<p class="p1"><span class="Apple-converted-space">            </span>"SKIING",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>"TENNER",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>"RESCUE",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>"OPIATE",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>"MESSED",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>"ARTERY"</p>
+<p class="p1"><span class="Apple-converted-space">          </span>]</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>];</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>let currentGrid;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>let startTime;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>let timerInterval;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>let currentSelectedInput = null;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Initialize a new game (new grid and timer)</p>
+<p class="p1"><span class="Apple-converted-space">      </span>function initGame() {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>clearInterval(timerInterval);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>mobileFirstTapDone = false; // Reset mobile first-tap state for jiggle</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const gridElement = document.getElementById('grid');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>gridElement.innerHTML = '';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Pick a random grid from the array</p>
+<p class="p1"><span class="Apple-converted-space">        </span>currentGrid = grids[Math.floor(Math.random() * grids.length)];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Create the 6×6 grid</p>
+<p class="p1"><span class="Apple-converted-space">        </span>for (let r = 0; r &lt; 6; r++) {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>const rowStr = currentGrid.rows[r];</p>
+<p class="p1"><span class="Apple-converted-space">          </span>for (let c = 0; c &lt; 6; c++) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const letter = rowStr[c];</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const tile = document.createElement('div');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>tile.classList.add('tile');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>// For vowels, replace the letter with an input field</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if ("AEIOU".includes(letter)) {</p>
+<p class="p1"><span class="Apple-converted-space">              </span>const input = document.createElement('input');</p>
+<p class="p1"><span class="Apple-converted-space">              </span>input.setAttribute('maxlength', '1');</p>
+<p class="p1"><span class="Apple-converted-space">              </span>input.dataset.solution = letter;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>input.dataset.row = r;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>input.dataset.col = c;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>input.classList.add('editable');</p>
+<p class="p1"><span class="Apple-converted-space">              </span>input.value = '';</p>
+<p class="p1"><span class="Apple-converted-space">              </span>// On mobile, disable keyboard input by marking inputs readonly.</p>
+<p class="p1"><span class="Apple-converted-space">              </span>if (isMobile()) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>input.setAttribute('readonly', 'true');</p>
+<p class="p1"><span class="Apple-converted-space">              </span>}</p>
+<p class="p1"><span class="Apple-converted-space">              </span>input.addEventListener('focus', () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>currentSelectedInput = input;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (isMobile()) {</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>// Only trigger jiggle if this is not the first tap</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>if (mobileFirstTapDone) {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>triggerJiggle();</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>mobileFirstTapDone = true;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">              </span>});</p>
+<p class="p1"><span class="Apple-converted-space">              </span>input.addEventListener('keydown', (e) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>// On mobile, ignore keyboard input.</p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (isMobile()) {</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>e.preventDefault();</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>return;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const row = parseInt(input.dataset.row);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const col = parseInt(input.dataset.col);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (e.key === 'ArrowRight') {</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>e.preventDefault();</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>moveSelection(row, col, 0, 1);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>} else if (e.key === 'ArrowLeft') {</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>e.preventDefault();</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>moveSelection(row, col, 0, -1);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>} else if (e.key === 'ArrowDown') {</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>e.preventDefault();</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>moveSelection(row, col, 1, 0);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>} else if (e.key === 'ArrowUp') {</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>e.preventDefault();</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>moveSelection(row, col, -1, 0);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>const key = e.key.toUpperCase();</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>if ("AEIOU".includes(key)) {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>input.value = key;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>e.preventDefault();</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>moveToNextInput();</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>checkCompletion();</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>} else if (e.key.length === 1) {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>e.preventDefault();</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">              </span>});</p>
+<p class="p1"><span class="Apple-converted-space">              </span>input.addEventListener('dragover', (e) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>e.preventDefault();</p>
+<p class="p1"><span class="Apple-converted-space">              </span>});</p>
+<p class="p1"><span class="Apple-converted-space">              </span>input.addEventListener('drop', (e) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>e.preventDefault();</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const droppedLetter = e.dataTransfer.getData('text/plain');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>if ("AEIOU".includes(droppedLetter)) {</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>input.value = droppedLetter;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>checkCompletion();</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">              </span>});</p>
+<p class="p1"><span class="Apple-converted-space">              </span>tile.appendChild(input);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">              </span>// For consonants simply display the letter</p>
+<p class="p1"><span class="Apple-converted-space">              </span>tile.textContent = letter;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>gridElement.appendChild(tile);</p>
+<p class="p1"><span class="Apple-converted-space">          </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Start/restart the timer</p>
+<p class="p1"><span class="Apple-converted-space">        </span>startTime = Date.now();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('timer').textContent = "Time: 0s";</p>
+<p class="p1"><span class="Apple-converted-space">        </span>timerInterval = setInterval(updateTimer, 1000);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Reset the current grid (clear inputs and restart timer) without changing the grid</p>
+<p class="p1"><span class="Apple-converted-space">      </span>function resetCurrentGrid() {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>clearInterval(timerInterval);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const inputs = document.querySelectorAll('input.editable');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>inputs.forEach(input =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>input.value = '';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p1"><span class="Apple-converted-space">        </span>startTime = Date.now();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('timer').textContent = "Time: 0s";</p>
+<p class="p1"><span class="Apple-converted-space">        </span>timerInterval = setInterval(updateTimer, 1000);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Moves focus from the current input to a neighboring input in the given direction</p>
+<p class="p1"><span class="Apple-converted-space">      </span>function moveSelection(row, col, dRow, dCol) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const newRow = row + dRow;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const newCol = col + dCol;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const nextInput = document.querySelector(`input.editable[data-row="${newRow}"][data-col="${newCol}"]`);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (nextInput) {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>nextInput.focus();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Moves focus to the next empty input (in row–major order)</p>
+<p class="p1"><span class="Apple-converted-space">      </span>function moveToNextInput() {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const inputs = Array.from(document.querySelectorAll('input.editable'));</p>
+<p class="p1"><span class="Apple-converted-space">        </span>inputs.sort((a, b) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>const aRow = parseInt(a.dataset.row),</p>
+<p class="p1"><span class="Apple-converted-space">                </span>bRow = parseInt(b.dataset.row);</p>
+<p class="p1"><span class="Apple-converted-space">          </span>return aRow === bRow ? parseInt(a.dataset.col) - parseInt(b.dataset.col) : aRow - bRow;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const currentIndex = inputs.indexOf(document.activeElement);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (currentIndex &gt;= 0 &amp;&amp; currentIndex &lt; inputs.length - 1) {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>inputs[currentIndex + 1].focus();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Update the timer display each second</p>
+<p class="p1"><span class="Apple-converted-space">      </span>function updateTimer() {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const elapsed = Math.floor((Date.now() - startTime) / 1000);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('timer').textContent = "Time: " + elapsed + "s";</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Check whether all vowel inputs are filled correctly</p>
+<p class="p1"><span class="Apple-converted-space">      </span>function checkCompletion() {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>let allFilled = true;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>let allCorrect = true;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const inputs = document.querySelectorAll('input.editable');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>inputs.forEach(input =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>const val = input.value.toUpperCase();</p>
+<p class="p1"><span class="Apple-converted-space">          </span>if (val === '' || !("AEIOU".includes(val))) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>allFilled = false;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>}</p>
+<p class="p1"><span class="Apple-converted-space">          </span>if (val !== input.dataset.solution) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>allCorrect = false;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (allFilled &amp;&amp; allCorrect) {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>clearInterval(timerInterval);</p>
+<p class="p1"><span class="Apple-converted-space">          </span>const elapsed = Math.floor((Date.now() - startTime) / 1000);</p>
+<p class="p1"><span class="Apple-converted-space">          </span>let speedRank;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>if (elapsed &lt; 20) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>speedRank = "💨Fast";</p>
+<p class="p1"><span class="Apple-converted-space">          </span>} else if (elapsed &lt; 60) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>speedRank = "👌OK";</p>
+<p class="p1"><span class="Apple-converted-space">          </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>speedRank = "🐢Slow";</p>
+<p class="p1"><span class="Apple-converted-space">          </span>}</p>
+<p class="p1"><span class="Apple-converted-space">          </span>// Launch confetti burst</p>
+<p class="p1"><span class="Apple-converted-space">          </span>launchConfetti();</p>
+<p class="p1"><span class="Apple-converted-space">          </span>// Update modal message with line breaks</p>
+<p class="p1"><span class="Apple-converted-space">          </span>document.getElementById('completion-message').innerHTML =<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>"Complete!&lt;br&gt; You took " + elapsed + "s&lt;br&gt; Speed rank: " + speedRank;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>document.getElementById('completion-modal').classList.remove('hidden');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Info modal handling</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const infoModal = document.getElementById('info-modal');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const infoIcon = document.getElementById('info-icon');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const closeInfo = document.getElementById('close-info');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>infoIcon.addEventListener('click', () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>infoModal.classList.remove('hidden');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p1"><span class="Apple-converted-space">      </span>closeInfo.addEventListener('click', () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>infoModal.classList.add('hidden');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Completion modal handling</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const completionModal = document.getElementById('completion-modal');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const closeCompletion = document.getElementById('close-completion');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const playAnother = document.getElementById('play-another');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>closeCompletion.addEventListener('click', () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>completionModal.classList.add('hidden');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p1"><span class="Apple-converted-space">      </span>playAnother.addEventListener('click', () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>completionModal.classList.add('hidden');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>initGame();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Vowel keys – clicking or dragging a key into a cell</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const vowelKeys = document.querySelectorAll('.vowel-key');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>vowelKeys.forEach(key =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Desktop click and drag events remain the same</p>
+<p class="p1"><span class="Apple-converted-space">        </span>key.addEventListener('click', () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>if (currentSelectedInput) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>currentSelectedInput.value = key.dataset.letter;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>checkCompletion();</p>
+<p class="p1"><span class="Apple-converted-space">          </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p1"><span class="Apple-converted-space">        </span>key.addEventListener('dragstart', (e) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>e.dataTransfer.setData('text/plain', key.dataset.letter);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// On mobile, add touch events to simulate dragging</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (isMobile()) {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>key.addEventListener('touchstart', onVowelTouchStart, {passive: false});</p>
+<p class="p1"><span class="Apple-converted-space">          </span>key.addEventListener('touchmove', onVowelTouchMove, {passive: false});</p>
+<p class="p1"><span class="Apple-converted-space">          </span>key.addEventListener('touchend', onVowelTouchEnd, {passive: false});</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Button event listeners:</p>
+<p class="p1"><span class="Apple-converted-space">      </span>// "New grid" picks a new grid and resets the timer</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('new-grid-button').addEventListener('click', initGame);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>// "Reset" clears the current grid's inputs and resets the timer</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('reset-button').addEventListener('click', resetCurrentGrid);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Start the game for the first time</p>
+<p class="p1"><span class="Apple-converted-space">      </span>initGame();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>});</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
