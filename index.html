@@ -444,12 +444,12 @@
         clearInterval(timerInterval);
         const elapsed = Math.floor((Date.now() - startTime) / 1000);
         let speedRank;
-        if (elapsed < 20) {
-          speedRank = "💨Fast";
-        } else if (elapsed < 60) {
-          speedRank = "👌OK";
+      if (elapsed < 45) {
+          speedRank = "💨Super speedy!";
+        } else if (elapsed < 90) {
+          speedRank = "👌Nice";
         } else {
-          speedRank = "🐢Slow";
+          speedRank = "🐢OK";
         }
         // Launch a simple confetti burst
         launchConfetti();
