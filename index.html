@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Voweldle</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
+  <style>
+    /* Basic layout and styling */
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: #f0f0f0;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+    #game-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    /* Top bar with info icon and timer */
+    #top-bar {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 400px;
+      margin-bottom: 10px;
+    }
+    #info-icon {
+      width: 24px;
+      height: 24px;
+      background-color: #d0d0d0;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 24px;
+      cursor: pointer;
+      user-select: none;
+    }
+    #timer {
+      font-size: 16px;
+      color: #333;
+    }
+    /* The 6×6 grid */
+    #grid {
+      display: grid;
+      grid-template-columns: repeat(6, 60px);
+      grid-gap: 10px;
+      margin-bottom: 20px;
+    }
+    .tile {
+      width: 60px;
+      height: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #d0d0d0;
+      border-radius: 10px;
+      font-size: 24px;
+      font-weight: 500;
+      transition: background-color 0.2s ease;
+      position: relative;
+    }
+    /* For vowel cells, use an input */
+    .tile input {
+      width: 100%;
+      height: 100%;
+      border: none;
+      text-align: center;
+      font-size: 24px;
+      font-weight: 500;
+      background-color: transparent;
+      outline: none;
+      text-transform: uppercase;
+    }
+    .tile:hover {
+      background-color: #b0b0b0;
+    }
+    .tile:focus-within {
+      background-color: #909090;
+    }
+    /* Vowel keys (20% darker than grid tiles) */
+    #vowel-keys {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .vowel-key {
+      width: 40px;
+      height: 40px;
+      background-color: #a6a6a6; /* 20% darker than #d0d0d0 */
+      margin: 0 5px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      font-size: 20px;
+      font-weight: 500;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .vowel-key:hover {
+      background-color: #8c8c8c;
+    }
+    /* Buttons container */
+    #buttons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    button {
+      background-color: #d0d0d0;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    button:hover {
+      background-color: #aeaeae;
+    }
+    /* Modal styling */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      position: relative;
+      max-width: 90%;
+      margin: 0 20px;
+    }
+    .close {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    .hidden {
+      display: none;
+    }
+    /* Larger "Complete!" title in the winning modal */
+    #complete-title {
+      font-size: 2.5em;
+      margin: 0 0 10px 0;
+    }
+    /* Responsive adjustments for smaller screens (mobile) */
+    @media (max-width: 480px) {
+      #grid {
+        grid-template-columns: repeat(6, 50px);
+        grid-gap: 5px;
+      }
+      .tile {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+      }
+      .tile input {
+        font-size: 20px;
+      }
+      .vowel-key {
+        width: 60px;
+        height: 60px;
+        font-size: 22px;
+      }
+      button {
+        padding: 8px 16px;
+        font-size: 14px;
+      }
+      #timer {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="game-container">
+    <!-- Top bar with info icon and timer -->
+    <div id="top-bar">
+      <div id="info-icon">i</div>
+      <div id="timer">Time: 0s</div>
+    </div>
+    <!-- The 6×6 grid -->
+    <div id="grid"></div>
+    <!-- Vowel keys row -->
+    <div id="vowel-keys">
+      <div class="vowel-key" data-letter="A">A</div>
+      <div class="vowel-key" data-letter="E">E</div>
+      <div class="vowel-key" data-letter="I">I</div>
+      <div class="vowel-key" data-letter="O">O</div>
+      <div class="vowel-key" data-letter="U">U</div>
+    </div>
+    <!-- Buttons: New grid (loads a new puzzle) and Reset (clears current entries) -->
+    <div id="buttons">
+      <button id="new-grid-button">New grid</button>
+      <button id="reset-button">Reset</button>
+    </div>
+  </div>
+
+  <!-- Info Modal -->
+  <div id="info-modal" class="modal hidden">
+    <div class="modal-content">
+      <span id="close-info" class="close">&times;</span>
+      <p>Complete the grid with vowels to make 6 words horizontally and 6 words vertically as quickly as possible.</p>
+    </div>
+  </div>
+
+  <!-- Completion Modal with two buttons -->
+  <div id="completion-modal" class="modal hidden">
+    <div class="modal-content">
+      <h1 id="complete-title">Complete!</h1>
+      <p id="completion-message"></p>
+      <div style="margin-top:20px;">
+        <button id="play-another">Play another</button>
+        <button id="close-completion">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Helper function to detect mobile devices
+    function isMobile() {
+      return /Mobi|Android/i.test(navigator.userAgent);
+    }
+
+    // --- Grid Management: Ensure new puzzles are unplayed ---
+    const grids = [
+      {
+        rows: [
+          "ATTEST",
+          "SHERPA",
+          "TIARAS",
+          "RESORT",
+          "AVERSE",
+          "LESSER"
+        ]
+      },
+      {
+        rows: [
+          "ACHING",
+          "BOOGER",
+          "SPOUSE",
+          "UPDATE",
+          "REINED",
+          "DREARY"
+        ]
+      },
+      {
+        rows: [
+          "SKIING",
+          "TENNER",
+          "RESCUE",
+          "OPIATE",
+          "MESSED",
+          "ARTERY"
+        ]
+      }
+    ];
+
+    // Array of indices for grids that haven't been played yet
+    let unusedGrids = [];
+    function initializeUnusedGrids() {
+      unusedGrids = Array.from({ length: grids.length }, (_, i) => i);
+    }
+    // Pick and remove a random grid index from unusedGrids; if empty, reinitialize.
+    function pickNextGrid() {
+      if (unusedGrids.length === 0) {
+        initializeUnusedGrids();
+      }
+      const randomIndex = Math.floor(Math.random() * unusedGrids.length);
+      const gridIndex = unusedGrids.splice(randomIndex, 1)[0];
+      return grids[gridIndex];
+    }
+
+    // Initialize unusedGrids at start
+    initializeUnusedGrids();
+
+    let currentGrid;
+    let startTime;
+    let timerInterval;
+    let currentSelectedInput = null;
+
+    // Initialize a new game (new grid and timer)
+    function initGame() {
+      clearInterval(timerInterval);
+      const gridElement = document.getElementById('grid');
+      gridElement.innerHTML = '';
+      // Pick a grid that hasn't been played yet
+      currentGrid = pickNextGrid();
+      // Create the 6×6 grid
+      for (let r = 0; r < 6; r++) {
+        const rowStr = currentGrid.rows[r];
+        for (let c = 0; c < 6; c++) {
+          const letter = rowStr[c];
+          const tile = document.createElement('div');
+          tile.classList.add('tile');
+          // For vowels, replace the letter with an input field
+          if ("AEIOU".includes(letter)) {
+            const input = document.createElement('input');
+            input.setAttribute('maxlength', '1');
+            input.dataset.solution = letter;
+            input.dataset.row = r;
+            input.dataset.col = c;
+            input.classList.add('editable');
+            input.value = '';
+            // On mobile, disable keyboard input by marking inputs readonly.
+            if (isMobile()) {
+              input.setAttribute('readonly', 'true');
+            }
+            input.addEventListener('focus', () => {
+              currentSelectedInput = input;
+            });
+            input.addEventListener('keydown', (e) => {
+              // On mobile, ignore keyboard input.
+              if (isMobile()) {
+                e.preventDefault();
+                return;
+              }
+              const row = parseInt(input.dataset.row);
+              const col = parseInt(input.dataset.col);
+              if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                moveSelection(row, col, 0, 1);
+              } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                moveSelection(row, col, 0, -1);
+              } else if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                moveSelection(row, col, 1, 0);
+              } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                moveSelection(row, col, -1, 0);
+              } else {
+                const key = e.key.toUpperCase();
+                if ("AEIOU".includes(key)) {
+                  input.value = key;
+                  e.preventDefault();
+                  moveToNextInput();
+                  checkCompletion();
+                } else if (e.key.length === 1) {
+                  e.preventDefault();
+                }
+              }
+            });
+            input.addEventListener('dragover', (e) => {
+              e.preventDefault();
+            });
+            input.addEventListener('drop', (e) => {
+              e.preventDefault();
+              const droppedLetter = e.dataTransfer.getData('text/plain');
+              if ("AEIOU".includes(droppedLetter)) {
+                input.value = droppedLetter;
+                checkCompletion();
+              }
+            });
+            tile.appendChild(input);
+          } else {
+            // For consonants simply display the letter
+            tile.textContent = letter;
+          }
+          gridElement.appendChild(tile);
+        }
+      }
+      // Start/restart the timer
+      startTime = Date.now();
+      document.getElementById('timer').textContent = "Time: 0s";
+      timerInterval = setInterval(updateTimer, 1000);
+    }
+
+    // Reset the current grid (clear inputs and restart timer) without changing the grid
+    function resetCurrentGrid() {
+      clearInterval(timerInterval);
+      const inputs = document.querySelectorAll('input.editable');
+      inputs.forEach(input => {
+        input.value = '';
+      });
+      startTime = Date.now();
+      document.getElementById('timer').textContent = "Time: 0s";
+      timerInterval = setInterval(updateTimer, 1000);
+    }
+
+    // Moves focus from the current input to a neighboring input in the given direction
+    function moveSelection(row, col, dRow, dCol) {
+      const newRow = row + dRow;
+      const newCol = col + dCol;
+      const nextInput = document.querySelector(`input.editable[data-row="${newRow}"][data-col="${newCol}"]`);
+      if (nextInput) {
+        nextInput.focus();
+      }
+    }
+
+    // Moves focus to the next empty input (in row–major order)
+    function moveToNextInput() {
+      const inputs = Array.from(document.querySelectorAll('input.editable'));
+      inputs.sort((a, b) => {
+        const aRow = parseInt(a.dataset.row),
+              bRow = parseInt(b.dataset.row);
+        return aRow === bRow ? parseInt(a.dataset.col) - parseInt(b.dataset.col) : aRow - bRow;
+      });
+      const currentIndex = inputs.indexOf(document.activeElement);
+      if (currentIndex >= 0 && currentIndex < inputs.length - 1) {
+        inputs[currentIndex + 1].focus();
+      }
+    }
+
+    // Update the timer display each second
+    function updateTimer() {
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+      document.getElementById('timer').textContent = "Time: " + elapsed + "s";
+    }
+
+    // Check whether all vowel inputs are filled correctly
+    function checkCompletion() {
+      let allFilled = true;
+      let allCorrect = true;
+      const inputs = document.querySelectorAll('input.editable');
+      inputs.forEach(input => {
+        const val = input.value.toUpperCase();
+        if (val === '' || !("AEIOU".includes(val))) {
+          allFilled = false;
+        }
+        if (val !== input.dataset.solution) {
+          allCorrect = false;
+        }
+      });
+      if (allFilled && allCorrect) {
+        clearInterval(timerInterval);
+        const elapsed = Math.floor((Date.now() - startTime) / 1000);
+        let speedRank;
+        if (elapsed < 20) {
+          speedRank = "💨Fast";
+        } else if (elapsed < 60) {
+          speedRank = "👌OK";
+        } else {
+          speedRank = "🐢Slow";
+        }
+        // Launch a simple confetti burst
+        launchConfetti();
+        // Set the winning modal text.
+        document.getElementById('completion-message').innerHTML =
+          "You took " + elapsed + "s<br>Speed rank: " + speedRank;
+        document.getElementById('completion-modal').classList.remove('hidden');
+      }
+    }
+
+    // Launch a simple confetti burst on win
+    function launchConfetti() {
+      const confettiContainer = document.createElement('div');
+      confettiContainer.id = 'confetti-container';
+      confettiContainer.style.position = 'fixed';
+      confettiContainer.style.top = '0';
+      confettiContainer.style.left = '0';
+      confettiContainer.style.width = '100%';
+      confettiContainer.style.height = '100%';
+      confettiContainer.style.pointerEvents = 'none';
+      document.body.appendChild(confettiContainer);
+
+      const colors = ['#FFC700', '#FF0000', '#2E3192', '#41BBC7', '#7CFC00', '#FF69B4'];
+      const numConfetti = 50;
+      for (let i = 0; i < numConfetti; i++) {
+        const confetti = document.createElement('div');
+        confetti.classList.add('confetti');
+        confetti.style.position = 'absolute';
+        confetti.style.width = '8px';
+        confetti.style.height = '8px';
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.top = Math.random() * 100 + '%';
+        confetti.style.left = Math.random() * 100 + '%';
+        confetti.style.opacity = Math.random();
+        confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+        confetti.style.transition = 'transform 2s ease-out, top 2s ease-out, opacity 2s ease-out';
+        confettiContainer.appendChild(confetti);
+        
+        // animate confetti falling
+        setTimeout(() => {
+          confetti.style.top = '110%';
+          confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+          confetti.style.opacity = '0';
+        }, 50);
+      }
+      
+      setTimeout(() => {
+        document.body.removeChild(confettiContainer);
+      }, 2000);
+    }
+
+    // Info modal handling
+    const infoModal = document.getElementById('info-modal');
+    const infoIcon = document.getElementById('info-icon');
+    const closeInfo = document.getElementById('close-info');
+    infoIcon.addEventListener('click', () => {
+      infoModal.classList.remove('hidden');
+    });
+    closeInfo.addEventListener('click', () => {
+      infoModal.classList.add('hidden');
+    });
+
+    // Completion modal handling
+    const completionModal = document.getElementById('completion-modal');
+    const closeCompletion = document.getElementById('close-completion');
+    const playAnother = document.getElementById('play-another');
+    closeCompletion.addEventListener('click', () => {
+      completionModal.classList.add('hidden');
+    });
+    playAnother.addEventListener('click', () => {
+      completionModal.classList.add('hidden');
+      initGame();
+    });
+
+    // Vowel keys – clicking a key enters that letter into the selected cell.
+    const vowelKeys = document.querySelectorAll('.vowel-key');
+    vowelKeys.forEach(key => {
+      key.addEventListener('click', () => {
+        if (currentSelectedInput) {
+          currentSelectedInput.value = key.dataset.letter;
+          checkCompletion();
+        }
+      });
+    });
+
+    // Button event listeners:
+    // "New grid" picks a new grid (that hasn't been played yet) and resets the timer
+    document.getElementById('new-grid-button').addEventListener('click', initGame);
+    // "Reset" clears the current grid's inputs and resets the timer
+    document.getElementById('reset-button').addEventListener('click', resetCurrentGrid);
+
+    // Start the game for the first time
+    initGame();
+  </script>
+</body>
+</html>
